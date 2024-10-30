@@ -2,7 +2,10 @@ const express = require('express')
 const router = express.Router()
 const Projects = require('./projects-model')
 const Actions = require('../actions/actions-model')
-const {validateBody} = require('./projects-middleware')
+const {
+    validateBody,
+    validateId
+} = require('./projects-middleware')
 
 
 router.get('/api/projects', (req, res, next) => {
@@ -39,7 +42,7 @@ router.get('/api/projects/:id', (req, res) => {
 
 })
 
-router.post('/api/projects', validateBody, async (req, res) => {
+router.post('/api/projects', validateBody, async (req, res, next) => {
     try {
         const { name, description, completed } = req.body
         const createdProj = await Projects.insert({name, description, completed})
@@ -56,6 +59,23 @@ router.post('/api/projects', validateBody, async (req, res) => {
             message: err.message
         })
     }
+})
+
+router.put('/api/projects/:id', validateId, validateBody, (req, res, next) => {
+    const changes = req.body
+    const { id } = req.params
+    Projects.update(id, changes)
+        .then(updateProj => {
+            if(updateProj){
+                res.status(200).json(updateProj)
+                
+            } else {
+                res.status(404).json({
+                    message: "aaaaaaaaa"
+                })
+            }
+        })
+        .catch(next)
 })
 
 
