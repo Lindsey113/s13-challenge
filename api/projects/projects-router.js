@@ -11,13 +11,10 @@ const {
 router.get('/api/projects', (req, res, next) => {
     Projects.get()
         .then(proj => {
-            console.log(proj)
             res.json(proj)
         })
         .catch(err => {
-            res.status(500).json({
-                message: err.message
-            })
+           next(err)
         })
 })
 
@@ -82,6 +79,15 @@ router.delete('/api/projects/:id', validateId, async (req, res, next) => {
     try {
         const deleted = await Projects.remove(req.params.id)
         res.json(deleted)
+    } catch(err) {
+        next(err)
+    }
+})
+
+router.get('/api/projects/:id/actions', validateId, async (req, res, next) => {
+    try {
+        const projActions = await Projects.getProjectActions(req.params.id)
+        res.json(projActions)
     } catch(err) {
         next(err)
     }
