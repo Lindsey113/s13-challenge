@@ -13,7 +13,7 @@ router.get('/api/projects', (req, res, next) => {
             res.json(proj)
         })
         .catch(err => {
-           next(err)
+            next(err)
         })
 })
 
@@ -30,10 +30,7 @@ router.get('/api/projects/:id', (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).json({
-                message: "Error retrieving project",
-                error: err.message
-            });
+            next(err)
         })
 
 })
@@ -41,19 +38,17 @@ router.get('/api/projects/:id', (req, res) => {
 router.post('/api/projects', validateBody, async (req, res, next) => {
     try {
         const { name, description, completed } = req.body
-        const createdProj = await Projects.insert({name, description, completed})
+        const createdProj = await Projects.insert({ name, description, completed })
 
-        if(createdProj){
+        if (createdProj) {
             res.status(201).json(createdProj)
         } else {
             res.status(500).json({
                 message: "Failed"
             })
         }
-    } catch(err) {
-        res.status(500).json({
-            message: err.message
-        })
+    } catch (err) {
+        next(err)
     }
 })
 
@@ -62,9 +57,9 @@ router.put('/api/projects/:id', validateId, validateBody, (req, res, next) => {
     const { id } = req.params
     Projects.update(id, changes)
         .then(updateProj => {
-            if(updateProj){
+            if (updateProj) {
                 res.status(200).json(updateProj)
-                
+
             } else {
                 res.status(404).json({
                     message: "aaaaaaaaa"
@@ -78,7 +73,7 @@ router.delete('/api/projects/:id', validateId, async (req, res, next) => {
     try {
         const deleted = await Projects.remove(req.params.id)
         res.json(deleted)
-    } catch(err) {
+    } catch (err) {
         next(err)
     }
 })
@@ -87,7 +82,7 @@ router.get('/api/projects/:id/actions', validateId, async (req, res, next) => {
     try {
         const projActions = await Projects.getProjectActions(req.params.id)
         res.json(projActions)
-    } catch(err) {
+    } catch (err) {
         next(err)
     }
 })

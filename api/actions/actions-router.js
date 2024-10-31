@@ -12,9 +12,7 @@ router.get('/api/actions', (req, res, next) => {
             res.json(action)
         })
         .catch(err => {
-            res.status(500).json({
-                message: "Failed"
-            })
+            next(err)
         })
 })
 
@@ -38,25 +36,25 @@ router.get('/api/actions/:id', (req, res, next) => {
 
 router.post('/api/actions', validateBody, async (req, res, next) => {
     try {
-        const { 
-            project_id, 
-            description, 
-            notes, 
+        const {
+            project_id,
+            description,
+            notes,
             completed } = req.body
         const createAction = await Actions.insert({
-            project_id, 
-            description, 
-            notes, 
+            project_id,
+            description,
+            notes,
             completed
         })
-        if(createAction){
+        if (createAction) {
             res.status(201).json(createAction)
         } else {
             res.status(500).json({
                 message: "Failed"
             })
         }
-    } catch(err){
+    } catch (err) {
         next(err)
     }
 })
@@ -66,9 +64,9 @@ router.put('/api/actions/:id', validateId, validateBody, (req, res, next) => {
     const { id } = req.params
     Actions.update(id, changes)
         .then(updateAction => {
-            if(updateAction){
+            if (updateAction) {
                 res.status(200).json(updateAction)
-                
+
             } else {
                 res.status(404).json({
                     message: "aaaaaaaaa"
@@ -82,7 +80,7 @@ router.delete('/api/actions/:id', validateId, async (req, res, next) => {
     try {
         const deleted = await Actions.remove(req.params.id)
         res.json(deleted)
-    } catch(err) {
+    } catch (err) {
         next(err)
     }
 })

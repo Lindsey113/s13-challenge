@@ -1,4 +1,3 @@
-// add middlewares here related to projects
 const express = require('express')
 const server = express()
 server.use(express.json())
@@ -24,13 +23,13 @@ function validateBody(req, res, next) {
 async function validateId(req, res, next) {
     try {
         const projID = await Projects.get(req.params.id)
-        if(!projID){
-           return res.status(404).json({
+        if (!projID) {
+            return res.status(404).json({
                 message: "No project with that ID"
             })
-        } 
+        }
         next()
-    } catch(err) {
+    } catch (err) {
         res.status(500).json({
             message: err.message
         })
